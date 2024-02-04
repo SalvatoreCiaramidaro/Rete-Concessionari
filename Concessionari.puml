@@ -1,0 +1,57 @@
+@startuml
+
+class Veicolo {
+  -modello: String
+  -anno: int
+  -prezzo: double
+}
+
+class Auto {
+  -numPorte: int
+  -Cavalli: int
+}
+
+
+
+class Clienti {
+  -nome: String
+  -indirizzo: String
+}
+
+class Venditori {
+  -Nome: String
+  -IdVenditore: int
+}
+
+class Showroom {
+  -posizione: String
+  -veicoli: List<Veicolo>
+}
+
+class Vendite {
+  -IdVendità: int
+  -data: Date
+  -veicolo: Veicolo
+  -cliente: Cliente
+  -salesperson: Salespeople
+}
+
+class Moto {
+  -numRuote: int
+  -numCilindrata:int
+}
+
+Veicolo <|-- Auto
+Veicolo <|-- Moto
+
+
+Vendite "*"--"1" Venditori
+Showroom "1" -- "*" Veicolo
+Vendite "*"--"1" Clienti
+Vendite "*"--"1" Veicolo
+Clienti"*"--"1" Showroom
+Showroom "1"--"*" Vendite
+
+
+
+@enduml
