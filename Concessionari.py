@@ -27,9 +27,11 @@ class Venditori:
         self.id_venditore = id_venditore
 
 class Showroom:
-    def __init__(self,posizione):
+    def __init__(self, posizione):
         self.posizione = posizione
         self.veicoli = []
+        self.venditori = []
+
 
 class Vendite:
     def __init__(self, id_vendita, data, veicolo, cliente, salesperson):
@@ -56,8 +58,18 @@ def aggiungi_venditore():
     nome = input("Inserisci il nome del venditore: ")
     id_venditore = int(input("Inserisci l'ID del venditore: "))
     venditore = Venditori(nome, id_venditore)
-    venditori.append(venditore)
-    print("Venditore aggiunto con successo.")
+
+    print("Showrooms disponibili:")
+    for i, showroom in enumerate(showrooms, 1):
+        print(f"{i}. {showroom.posizione}")
+
+    try:
+        showroom_index = int(input("Seleziona lo showroom a cui associare il venditore (inserisci il numero): ")) - 1
+        showrooms[showroom_index].venditori.append(venditore)
+        print("Venditore aggiunto con successo allo showroom.")
+    except IndexError:
+        print("Lo showroom selezionato non esiste.")
+
 
 def aggiungi_veicolo():
     modello = input("Inserisci il modello del veicolo: ")
@@ -105,9 +117,19 @@ def effettua_vendita():
     print("Vendita effettuata con successo.")
 
 def mostra_veicoli_in_vendita():
-    print("Veicoli disponibili in vendita:")
-    for veicolo in veicoli_in_vendita:
-        print(f"Modello: {veicolo.modello}, Anno: {veicolo.anno}, Prezzo: {veicolo.prezzo}")
+    print("Showrooms disponibili:")
+    for i, showroom in enumerate(showrooms, 1):
+        print(f"{i}. {showroom.posizione}")
+
+    try:
+        showroom_index = int(input("Seleziona lo showroom di cui vuoi visualizzare i veicoli in vendita (inserisci il numero): ")) - 1
+        veicoli_showroom = showrooms[showroom_index].veicoli
+        print(f"Veicoli in vendita nello showroom {showrooms[showroom_index].posizione}:")
+        for veicolo in veicoli_showroom:
+            print(f"Modello: {veicolo.modello}, Anno: {veicolo.anno}, Prezzo: {veicolo.prezzo}")
+    except IndexError:
+        print("Lo showroom selezionato non esiste.")
+
 
 def mostra_vendite_effettuate():
     print("Vendite effettuate:")
