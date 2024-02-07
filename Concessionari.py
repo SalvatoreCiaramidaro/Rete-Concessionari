@@ -101,22 +101,63 @@ def aggiungi_veicolo():
 
 
 def effettua_vendita():
-    print("Veicoli disponibili in vendita:")
-    for i, veicolo in enumerate(veicoli_in_vendita, 1):
-        print(f"{i}. {veicolo.modello}")
-    veicolo_index = int(input("Seleziona il veicolo da vendere (inserisci il numero): ")) - 1
-    veicolo = veicoli_in_vendita.pop(veicolo_index)
-    cliente_nome = input("Inserisci il nome del cliente: ")
-    cliente_indirizzo = input("Inserisci l'indirizzo del cliente: ")
-    cliente = Clienti(cliente_nome, cliente_indirizzo)
-    venditore_index = int(input("Seleziona il venditore (inserisci l'indice): "))
-    venditore = venditori[venditore_index]
-    id_vendita = len(vendite_effettuate) + 1
-    vendita = Vendite(id_vendita, "2024-02-07", veicolo, cliente, venditore)
-    vendite_effettuate.append(vendita)
-    print("Vendita effettuata con successo.")
+    if not showrooms:
+        print("Nessun showroom disponibile. Aggiungi uno showroom prima di effettuare una vendita.")
+        return
 
-def mostra_veicoli_in_vendita():
+    print("Showrooms disponibili:")
+    for i, showroom in enumerate(showrooms, 1):
+        print(f"{i}. {showroom.posizione}")
+
+    try:
+        showroom_index = int(input("Seleziona lo showroom da cui scegliere il veicolo (inserisci il numero): ")) - 1
+        if showroom_index < 0 or showroom_index >= len(showrooms):
+            print("Numero showroom non valido.")
+            return
+
+        veicoli_showroom = showrooms[showroom_index].veicoli
+        if not veicoli_showroom:
+            print("Non ci sono veicoli disponibili in questo showroom.")
+            return
+
+        print("Veicoli disponibili in questo showroom:")
+        for i, veicolo in enumerate(veicoli_showroom, 1):
+            print(f"{i}. {veicolo.modello}")
+
+        veicolo_index = int(input("Seleziona il veicolo da vendere (inserisci il numero): ")) - 1
+        if veicolo_index < 0 or veicolo_index >= len(veicoli_showroom):
+            print("Numero veicolo non valido.")
+            return
+
+        veicolo = veicoli_showroom[veicolo_index]
+
+        cliente_nome = input("Inserisci il nome del cliente: ")
+        cliente_indirizzo = input("Inserisci l'indirizzo del cliente: ")
+        cliente = Clienti(cliente_nome, cliente_indirizzo)
+
+        print("Venditori disponibili in questo showroom:")
+        for i, venditore in enumerate(showrooms[showroom_index].venditori, 1):
+            print(f"{i}. {venditore.nome}")
+
+        venditore_index = int(input("Seleziona il venditore (inserisci l'indice): "))
+        if venditore_index < 0 or venditore_index >= len(showrooms[showroom_index].venditori):
+            print("Numero venditore non valido.")
+            return
+
+        venditore = showrooms[showroom_index].venditori[venditore_index]
+
+        id_vendita = len(vendite_effettuate) + 1
+        vendita = Vendite(id_vendita, "2024-02-07", veicolo, cliente, venditore)
+        vendite_effettuate.append(vendita)
+        print("Vendita effettuata con successo.")
+    except ValueError:
+        print("Input non valido. Assicurati di inserire un numero.")
+    except IndexError:
+        print("Indice non valido. Assicurati di selezionare un'opzione corretta.")
+
+
+
+def mostra_veicoli_in_vendita(tipo_veicolo):
     print("Showrooms disponibili:")
     for i, showroom in enumerate(showrooms, 1):
         print(f"{i}. {showroom.posizione}")
@@ -125,10 +166,17 @@ def mostra_veicoli_in_vendita():
         showroom_index = int(input("Seleziona lo showroom di cui vuoi visualizzare i veicoli in vendita (inserisci il numero): ")) - 1
         veicoli_showroom = showrooms[showroom_index].veicoli
         print(f"Veicoli in vendita nello showroom {showrooms[showroom_index].posizione}:")
-        for veicolo in veicoli_showroom:
-            print(f"Modello: {veicolo.modello}, Anno: {veicolo.anno}, Prezzo: {veicolo.prezzo}")
+        if tipo_veicolo == "auto":
+            for veicolo in veicoli_showroom:
+                if isinstance(veicolo, Auto):
+                    print(f"Auto: Modello: {veicolo.modello}, Anno: {veicolo.anno}, Prezzo: {veicolo.prezzo}, Numero Porte: {veicolo.numPorte}, Cavalli: {veicolo.cavalli}")
+        elif tipo_veicolo == "moto":
+            for veicolo in veicoli_showroom:
+                if isinstance(veicolo, Moto):
+                    print(f"Moto: Modello: {veicolo.modello}, Anno: {veicolo.anno}, Prezzo: {veicolo.prezzo}, Numero Ruote: {veicolo.numRuote}, Cilindrata: {veicolo.numCilindrata}")
     except IndexError:
         print("Lo showroom selezionato non esiste.")
+
 
 
 def mostra_vendite_effettuate():
@@ -165,7 +213,8 @@ def main():
             case "4":
                 effettua_vendita()
             case "5":
-                mostra_veicoli_in_vendita()
+                tipo_veicolo = input("Seleziona il tipo di veicolo (auto/moto): ").lower()
+                mostra_veicoli_in_vendita(tipo_veicolo)
             case "6":
                 mostra_vendite_effettuate()
             case "7":
