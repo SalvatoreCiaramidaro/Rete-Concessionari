@@ -45,13 +45,12 @@ Veicolo <|-- Auto
 Veicolo <|-- Moto
 
 
-Vendite "*"--"1" Venditori
-Showroom "1" -- "*" Veicolo
-Vendite "*"--"1" Clienti
-Vendite "*"--"1" Veicolo
-Clienti"*"--"1" Showroom
-Showroom "1"--"*" Vendite
-
+Vendite "n"--"1" Venditori : effettuano
+Vendite "n"--"1" Clienti : comprano
+Vendite "n"--"1" Veicolo : Viene venduto
+Showroom "1"--"n" Vendite : dove vengono effettuate
+Venditori "n"--"1" Showroom : lavorano presso
+ 
 
 
 @enduml

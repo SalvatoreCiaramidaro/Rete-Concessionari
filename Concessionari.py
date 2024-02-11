@@ -129,7 +129,7 @@ def effettua_vendita():
             print("Numero veicolo non valido.")
             return
 
-        veicolo = veicoli_showroom[veicolo_index]
+        veicolo_venduto = veicoli_showroom.pop(veicolo_index)  # Rimuovi il veicolo venduto dall'inventario
 
         cliente_nome = input("Inserisci il nome del cliente: ")
         cliente_indirizzo = input("Inserisci l'indirizzo del cliente: ")
@@ -137,9 +137,9 @@ def effettua_vendita():
 
         print("Venditori disponibili in questo showroom:")
         for i, venditore in enumerate(showrooms[showroom_index].venditori, 1):
-            print(f"{i}. {venditore.nome}")
+            print(f"ID Venditore:{venditore.id_venditore}. {venditore.nome}")
 
-        venditore_index = int(input("Seleziona il venditore (inserisci l'indice): "))
+        venditore_index = int(input("Seleziona il venditore (inserisci il suo ID): "))
         if venditore_index < 0 or venditore_index >= len(showrooms[showroom_index].venditori):
             print("Numero venditore non valido.")
             return
@@ -147,13 +147,14 @@ def effettua_vendita():
         venditore = showrooms[showroom_index].venditori[venditore_index]
 
         id_vendita = len(vendite_effettuate) + 1
-        vendita = Vendite(id_vendita, "2024-02-07", veicolo, cliente, venditore)
+        vendita = Vendite(id_vendita, "2024-02-07", veicolo_venduto, cliente, venditore)  # Utilizza il veicolo venduto
         vendite_effettuate.append(vendita)
         print("Vendita effettuata con successo.")
     except ValueError:
         print("Input non valido. Assicurati di inserire un numero.")
     except IndexError:
         print("Indice non valido. Assicurati di selezionare un'opzione corretta.")
+
 
 
 
@@ -186,9 +187,10 @@ def mostra_vendite_effettuate():
 
 def mostra_showrooms():
     print("Showroom disponibili:")
+    i= 0
     for showroom in showrooms:
-        i = 0
-        print(f'Posizione {i+1}: {showroom.posizione}')
+        i = i+1
+        print(f'Posizione {i}: {showroom.posizione}')
 def main():
     while True:
         print("\nMENU:")
