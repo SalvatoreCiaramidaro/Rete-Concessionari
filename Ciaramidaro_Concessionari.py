@@ -139,12 +139,18 @@ def effettua_vendita():
         for i, venditore in enumerate(showrooms[showroom_index].venditori, 1):
             print(f"ID Venditore:{venditore.id_venditore}. {venditore.nome}")
 
-        venditore_index = int(input("Seleziona il venditore (inserisci il suo ID): "))
-        if venditore_index < 0 or venditore_index >= len(showrooms[showroom_index].venditori):
-            print("Numero venditore non valido.")
+        venditore_id = int(input("Seleziona l'ID del venditore: "))
+        venditore_index = None
+        for idx, venditore in enumerate(showrooms[showroom_index].venditori):
+            if venditore.id_venditore == venditore_id:
+                venditore_index = idx
+                break
+        
+        if venditore_index is None:
+            print("ID del venditore non valido.")
             return
 
-        venditore = showrooms[showroom_index].venditori[venditore_index]
+        venditore = showrooms[showroom_index].venditori.pop(venditore_index)  # Rimuovi il venditore selezionato
 
         id_vendita = len(vendite_effettuate) + 1
         vendita = Vendite(id_vendita, "2024-02-07", veicolo_venduto, cliente, venditore)  # Utilizza il veicolo venduto
